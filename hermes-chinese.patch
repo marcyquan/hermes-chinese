@@ -1,0 +1,1472 @@
+diff --git a/hermes_cli/commands.py b/hermes_cli/commands.py
+index 47cc17339..1b18dcdf8 100644
+--- a/hermes_cli/commands.py
++++ b/hermes_cli/commands.py
+@@ -63,119 +63,119 @@ class CommandDef:
+ 
+ COMMAND_REGISTRY: list[CommandDef] = [
+     # Session
+-    CommandDef("start", "Acknowledge platform start pings without a reply", "Session",
++    CommandDef("start", "确认平台启动 ping，不回复", "Session",
+                gateway_only=True),
+-    CommandDef("new", "Start a new session (fresh session ID + history)", "Session",
++    CommandDef("new", "开始新会话（全新的会话 ID 和历史记录）", "Session",
+                aliases=("reset",), args_hint="[name]"),
+-    CommandDef("topic", "Enable or inspect Telegram DM topic sessions", "Session",
++    CommandDef("topic", "启用或检查 Telegram 私信话题会话", "Session",
+                gateway_only=True, args_hint="[off|help|session-id]"),
+-    CommandDef("clear", "Clear screen and start a new session", "Session",
++    CommandDef("clear", "清屏并开始新会话", "Session",
+                cli_only=True),
+-    CommandDef("redraw", "Force a full UI repaint (recovers from terminal drift)", "Session",
++    CommandDef("redraw", "强制完全重绘 UI（从终端漂移中恢复）", "Session",
+                cli_only=True),
+-    CommandDef("history", "Show conversation history", "Session",
++    CommandDef("history", "显示对话历史", "Session",
+                cli_only=True),
+-    CommandDef("save", "Save the current conversation", "Session",
++    CommandDef("save", "保存当前对话", "Session",
+                cli_only=True),
+-    CommandDef("retry", "Retry the last message (resend to agent)", "Session"),
+-    CommandDef("undo", "Remove the last user/assistant exchange", "Session"),
+-    CommandDef("title", "Set a title for the current session", "Session",
++    CommandDef("retry", "重试上一条消息（重新发送给代理）", "Session"),
++    CommandDef("undo", "撤销最近一次用户/助手对话回合", "Session"),
++    CommandDef("title", "设置当前会话的标题", "Session",
+                args_hint="[name]"),
+-    CommandDef("handoff", "Hand off this session to a messaging platform (Telegram, Discord, etc.)", "Session",
++    CommandDef("handoff", "将会话移交给消息平台（Telegram、Discord 等）", "Session",
+                args_hint="<platform>", cli_only=True),
+-    CommandDef("branch", "Branch the current session (explore a different path)", "Session",
++    CommandDef("branch", "分支当前会话（探索不同路径）", "Session",
+                aliases=("fork",), args_hint="[name]"),
+-    CommandDef("compress", "Manually compress conversation context", "Session",
++    CommandDef("compress", "手动压缩对话上下文", "Session",
+                args_hint="[focus topic]"),
+-    CommandDef("rollback", "List or restore filesystem checkpoints", "Session",
++    CommandDef("rollback", "列出或恢复文件系统检查点", "Session",
+                args_hint="[number]"),
+-    CommandDef("snapshot", "Create or restore state snapshots of Hermes config/state", "Session",
++    CommandDef("snapshot", "创建或恢复 Hermes 配置/状态快照", "Session",
+                cli_only=True, aliases=("snap",), args_hint="[create|restore <id>|prune]"),
+-    CommandDef("stop", "Kill all running background processes", "Session"),
+-    CommandDef("approve", "Approve a pending dangerous command", "Session",
++    CommandDef("stop", "终止所有正在运行的后台进程", "Session"),
++    CommandDef("approve", "批准待处理的危险命令", "Session",
+                gateway_only=True, args_hint="[session|always]"),
+-    CommandDef("deny", "Deny a pending dangerous command", "Session",
++    CommandDef("deny", "拒绝待处理的危险命令", "Session",
+                gateway_only=True),
+-    CommandDef("background", "Run a prompt in the background", "Session",
++    CommandDef("background", "在后台运行提示", "Session",
+                aliases=("bg", "btw"), args_hint="<prompt>"),
+-    CommandDef("agents", "Show active agents and running tasks", "Session",
++    CommandDef("agents", "显示活动代理和正在运行的任务", "Session",
+                aliases=("tasks",)),
+-    CommandDef("queue", "Queue a prompt for the next turn (doesn't interrupt)", "Session",
++    CommandDef("queue", "排队一个提示到下一轮（不会中断当前操作）", "Session",
+                aliases=("q",), args_hint="<prompt>"),
+-    CommandDef("steer", "Inject a message after the next tool call without interrupting", "Session",
++    CommandDef("steer", "在下次工具调用后注入消息，不中断当前操作", "Session",
+                args_hint="<prompt>"),
+-    CommandDef("goal", "Set a standing goal Hermes works on across turns until achieved", "Session",
++    CommandDef("goal", "设置一个持续目标，Hermes 会跨轮次工作直到完成", "Session",
+                args_hint="[text | pause | resume | clear | status]"),
+-    CommandDef("subgoal", "Add or manage extra criteria on the active goal", "Session",
++    CommandDef("subgoal", "在活跃目标上添加或管理额外条件", "Session",
+                args_hint="[text | remove N | clear]"),
+-    CommandDef("status", "Show session info", "Session"),
+-    CommandDef("whoami", "Show your slash command access (admin / user)", "Info"),
+-    CommandDef("profile", "Show active profile name and home directory", "Info"),
+-    CommandDef("sethome", "Set this chat as the home channel", "Session",
++    CommandDef("status", "显示会话信息", "Session"),
++    CommandDef("whoami", "显示您的斜杠命令访问权限（管理员/用户）", "Info"),
++    CommandDef("profile", "显示当前配置文件名称和主目录", "Info"),
++    CommandDef("sethome", "将此聊天设为首页频道", "Session",
+                gateway_only=True, aliases=("set-home",)),
+-    CommandDef("resume", "Resume a previously-named session", "Session",
++    CommandDef("resume", "恢复之前命名的会话", "Session",
+                args_hint="[name]"),
+ 
+     # Configuration
+-    CommandDef("sessions", "Browse and resume previous sessions", "Session"),
++    CommandDef("sessions", "浏览和恢复之前的会话", "Session"),
+ 
+     # Configuration
+-    CommandDef("config", "Show current configuration", "Configuration",
++    CommandDef("config", "显示当前配置", "Configuration",
+                cli_only=True),
+-    CommandDef("model", "Switch model for this session", "Configuration",
++    CommandDef("model", "切换当前会话的模型", "Configuration",
+                aliases=("provider",), args_hint="[model] [--provider name] [--global]"),
+-    CommandDef("codex-runtime", "Toggle codex app-server runtime for OpenAI/Codex models",
++    "codex-runtime", "切换 OpenAI/Codex 模型的 codex 应用服务器运行时", "Configuration"
+                "Configuration", aliases=("codex_runtime",),
+                args_hint="[auto|codex_app_server]"),
+-    CommandDef("gquota", "Show Google Gemini Code Assist quota usage", "Info",
++    CommandDef("gquota", "显示 Google Gemini Code Assist 配额使用情况", "Info",
+                cli_only=True),
+ 
+-    CommandDef("personality", "Set a predefined personality", "Configuration",
++    CommandDef("personality", "设置预定义的个性", "Configuration",
+                args_hint="[name]"),
+-    CommandDef("statusbar", "Toggle the context/model status bar", "Configuration",
++    CommandDef("statusbar", "切换上下文/模型状态栏", "Configuration",
+                cli_only=True, aliases=("sb",)),
+-    CommandDef("verbose", "Cycle tool progress display: off -> new -> all -> verbose",
++    "verbose", "循环切换工具进度显示：关 -> 新 -> 全部 -> 详细", "Configuration"
+                "Configuration", cli_only=True,
+                gateway_config_gate="display.tool_progress_command"),
+-    CommandDef("footer", "Toggle gateway runtime-metadata footer on final replies",
++    "footer", "切换最终回复上的网关运行时元数据页脚", "Configuration"
+                "Configuration", args_hint="[on|off|status]",
+                subcommands=("on", "off", "status")),
+-    CommandDef("yolo", "Toggle YOLO mode (skip all dangerous command approvals)",
++    "yolo", "切换 YOLO 模式（跳过所有危险命令审批）", "Configuration"
+                "Configuration"),
+-    CommandDef("reasoning", "Manage reasoning effort and display", "Configuration",
++    CommandDef("reasoning", "管理推理力度和显示", "Configuration",
+                args_hint="[level|show|hide]",
+                subcommands=("none", "minimal", "low", "medium", "high", "xhigh", "show", "hide", "on", "off")),
+-    CommandDef("fast", "Toggle fast mode — OpenAI Priority Processing / Anthropic Fast Mode (Normal/Fast)", "Configuration",
++    CommandDef("fast", "切换快速模式 — OpenAI 优先处理 / Anthropic 快速模式（普通/快速）", "Configuration",
+                args_hint="[normal|fast|status]",
+                subcommands=("normal", "fast", "status", "on", "off")),
+-    CommandDef("skin", "Show or change the display skin/theme", "Configuration",
++    CommandDef("skin", "显示或更改显示皮肤/主题", "Configuration",
+                cli_only=True, args_hint="[name]"),
+-    CommandDef("indicator", "Pick the TUI busy-indicator style", "Configuration",
++    CommandDef("indicator", "选择 TUI 忙碌指示器样式", "Configuration",
+                cli_only=True, args_hint="[kaomoji|emoji|unicode|ascii]",
+                subcommands=("kaomoji", "emoji", "unicode", "ascii")),
+-    CommandDef("voice", "Toggle voice mode", "Configuration",
++    CommandDef("voice", "切换语音模式", "Configuration",
+                args_hint="[on|off|tts|status]", subcommands=("on", "off", "tts", "status")),
+-    CommandDef("busy", "Control what Enter does while Hermes is working", "Configuration",
++    CommandDef("busy", "控制 Hermes 工作时的 Enter 键行为", "Configuration",
+                cli_only=True, args_hint="[queue|steer|interrupt|status]",
+                subcommands=("queue", "steer", "interrupt", "status")),
+ 
+     # Tools & Skills
+-    CommandDef("tools", "Manage tools: /tools [list|disable|enable] [name...]", "Tools & Skills",
++    CommandDef("tools", "管理工具：/tools [list|disable|enable] [名称...]", "Tools & Skills",
+                args_hint="[list|disable|enable] [name...]", cli_only=True),
+-    CommandDef("toolsets", "List available toolsets", "Tools & Skills",
++    CommandDef("toolsets", "列出可用的工具集", "Tools & Skills",
+                cli_only=True),
+-    CommandDef("skills", "Search, install, inspect, or manage skills",
+-               "Tools & Skills", cli_only=True,
++    CommandDef("skills", "搜索、安装、检查或管理技能",
++                   "Tools & Skills", cli_only=True,
+                subcommands=("search", "browse", "inspect", "install", "audit")),
+-    CommandDef("bundles", "List skill bundles (aliases /<name> for multiple skills)",
++    "bundles", "列出技能包（别名 /<名称> 对应多个技能）", "Tools & Skills"
+                "Tools & Skills"),
+-    CommandDef("cron", "Manage scheduled tasks", "Tools & Skills",
++    CommandDef("cron", "管理计划任务", "Tools & Skills",
+                cli_only=True, args_hint="[subcommand]",
+                subcommands=("list", "add", "create", "edit", "pause", "resume", "run", "remove")),
+-    CommandDef("curator", "Background skill maintenance (status, run, pin, archive, list-archived)",
++    CommandDef("curator", "后台技能维护（状态、运行、固定、归档、列出已归档）",
+                "Tools & Skills", args_hint="[subcommand]",
+                subcommands=("status", "run", "pause", "resume", "pin", "unpin", "restore", "list-archived")),
+-    CommandDef("kanban", "Multi-profile collaboration board (tasks, links, comments)",
++    CommandDef("kanban", "多配置文件协作看板（任务、链接、评论）",
+                "Tools & Skills", args_hint="[subcommand]",
+                subcommands=("init", "boards", "create", "list", "ls", "show", "assign",
+                             "reclaim", "reassign", "diagnostics", "diag", "link", "unlink",
+@@ -183,42 +183,42 @@ COMMAND_REGISTRY: list[CommandDef] = [
+                             "archive", "tail", "dispatch", "stats", "notify-subscribe",
+                             "notify-list", "notify-unsubscribe", "log", "runs",
+                             "heartbeat", "assignees", "context", "specify", "gc")),
+-    CommandDef("reload", "Reload .env variables into the running session", "Tools & Skills",
++    CommandDef("reload", "重新加载 .env 变量到当前会话", "Tools & Skills",
+                cli_only=True),
+-    CommandDef("reload-mcp", "Reload MCP servers from config", "Tools & Skills",
++    CommandDef("reload-mcp", "从配置重新加载 MCP 服务器", "Tools & Skills",
+                aliases=("reload_mcp",)),
+-    CommandDef("reload-skills", "Re-scan ~/.hermes/skills/ for newly installed or removed skills",
++    CommandDef("reload-skills", "重新扫描 ~/.hermes/skills/ 以发现新增或删除的技能",
+                "Tools & Skills", aliases=("reload_skills",)),
+-    CommandDef("browser", "Connect browser tools to your live Chromium-family browser via CDP", "Tools & Skills",
++    CommandDef("browser", "通过 CDP 连接浏览器工具到您的 Chromium 浏览器", "Tools & Skills",
+                cli_only=True, args_hint="[connect|disconnect|status]",
+                subcommands=("connect", "disconnect", "status")),
+-    CommandDef("plugins", "List installed plugins and their status",
++    CommandDef("plugins", "列出已安装插件及其状态",
+                "Tools & Skills", cli_only=True),
+ 
+     # Info
+-    CommandDef("commands", "Browse all commands and skills (paginated)", "Info",
++    CommandDef("commands", "浏览所有命令和技能（分页）", "Info",
+                gateway_only=True, args_hint="[page]"),
+-    CommandDef("help", "Show available commands", "Info"),
+-    CommandDef("restart", "Gracefully restart the gateway after draining active runs", "Session",
++    CommandDef("help", "显示可用的命令", "Info"),
++    CommandDef("restart", "等待活跃运行结束后优雅重启网关", "Session",
+                gateway_only=True),
+-    CommandDef("usage", "Show token usage and rate limits for the current session", "Info"),
+-    CommandDef("insights", "Show usage insights and analytics", "Info",
++    CommandDef("usage", "显示当前会话的 token 使用情况和速率限制", "Info"),
++    CommandDef("insights", "显示使用洞察和分析", "Info",
+                args_hint="[days]"),
+-    CommandDef("platforms", "Show gateway/messaging platform status", "Info",
++    CommandDef("platforms", "显示网关/消息平台状态", "Info",
+                cli_only=True, aliases=("gateway",)),
+-    CommandDef("platform", "Pause, resume, or list a failing gateway platform", "Info",
++    CommandDef("platform", "暂停、恢复或列出故障网关平台", "Info",
+                gateway_only=True, args_hint="<pause|resume|list> [name]"),
+-    CommandDef("copy", "Copy the last assistant response to clipboard", "Info",
++    CommandDef("copy", "复制上一条助手回复到剪贴板", "Info",
+                cli_only=True, args_hint="[number]"),
+-    CommandDef("paste", "Attach clipboard image from your clipboard", "Info",
++    CommandDef("paste", "从剪贴板附加图片", "Info",
+                cli_only=True),
+-    CommandDef("image", "Attach a local image file for your next prompt", "Info",
++    CommandDef("image", "附加本地图片文件到您的下一条提示", "Info",
+                cli_only=True, args_hint="<path>"),
+-    CommandDef("update", "Update Hermes Agent to the latest version", "Info"),
+-    CommandDef("debug", "Upload debug report (system info + logs) and get shareable links", "Info"),
++    CommandDef("update", "更新 Hermes Agent 到最新版本", "Info"),
++    CommandDef("debug", "上传调试报告（系统信息 + 日志）并获取可分享链接", "Info"),
+ 
+     # Exit
+-    CommandDef("quit", "Exit the CLI (use --delete to also remove session history)", "Exit",
++    CommandDef("quit", "退出 CLI（使用 --delete 同时删除会话历史）", "Exit",
+                cli_only=True, aliases=("exit",), args_hint="[--delete]"),
+ ]
+ 
+diff --git a/hermes_cli/main.py b/hermes_cli/main.py
+index f1f833331..b37cc691b 100644
+--- a/hermes_cli/main.py
++++ b/hermes_cli/main.py
+@@ -11170,29 +11170,29 @@ def main():
+     # =========================================================================
+     model_parser = subparsers.add_parser(
+         "model",
+-        help="Select default model and provider",
+-        description="Interactively select your inference provider and default model",
++        help="选择默认模型和提供商",
++        description="交互式选择推理提供商和默认模型",
+     )
+     model_parser.add_argument(
+         "--portal-url",
+-        help="Portal base URL for Nous login (default: production portal)",
++        help="Nous 登录的门户基础 URL（默认：生产门户）",
+     )
+     model_parser.add_argument(
+         "--inference-url",
+-        help="Inference API base URL for Nous login (default: production inference API)",
++        help="Nous 登录的推理 API 基础 URL（默认：生产推理 API）",
+     )
+     model_parser.add_argument(
+         "--client-id",
+         default=None,
+-        help="OAuth client id to use for Nous login (default: hermes-cli)",
++        help="用于 Nous 登录的 OAuth 客户端 ID（默认：hermes-cli）",
+     )
+     model_parser.add_argument(
+-        "--scope", default=None, help="OAuth scope to request for Nous login"
++        "--scope", default=None, help="请求的 Nous 登录 OAuth 作用域"
+     )
+     model_parser.add_argument(
+         "--no-browser",
+         action="store_true",
+-        help="Do not attempt to open the browser automatically during Nous login",
++        help="在 Nous 登录期间不尝试自动打开浏览器",
+     )
+     model_parser.add_argument(
+         "--manual-paste",
+@@ -11208,15 +11208,15 @@ def main():
+         "--timeout",
+         type=float,
+         default=15.0,
+-        help="HTTP request timeout in seconds for Nous login (default: 15)",
++        help="Nous 登录的 HTTP 请求超时秒数（默认：15）",
+     )
+     model_parser.add_argument(
+-        "--ca-bundle", help="Path to CA bundle PEM file for Nous TLS verification"
++        "--ca-bundle", help="Nous TLS 验证的 CA 包 PEM 文件路径"
+     )
+     model_parser.add_argument(
+         "--insecure",
+         action="store_true",
+-        help="Disable TLS verification for Nous login (testing only)",
++        help="禁用 Nous 登录的 TLS 验证（仅测试）",
+     )
+     model_parser.set_defaults(func=cmd_model)
+ 
+@@ -11227,7 +11227,7 @@ def main():
+ 
+     fallback_parser = subparsers.add_parser(
+         "fallback",
+-        help="Manage fallback providers (tried when the primary model fails)",
++        help="管理备用提供商（主模型失败时尝试）",
+         description=(
+             "Manage the fallback provider chain.  Fallback providers are tried "
+             "in order when the primary model fails with rate-limit, overload, or "
+@@ -11239,20 +11239,20 @@ def main():
+     fallback_subparsers.add_parser(
+         "list",
+         aliases=["ls"],
+-        help="Show the current fallback chain (default when no subcommand)",
++        help="显示当前备用链（无子命令时的默认行为）",
+     )
+     fallback_subparsers.add_parser(
+         "add",
+-        help="Pick a provider + model (same picker as `hermes model`) and append to the chain",
++        help="选择提供商 + 模型（与 `hermes model` 相同的选择器）并追加到链中",
+     )
+     fallback_subparsers.add_parser(
+         "remove",
+         aliases=["rm"],
+-        help="Pick an entry to delete from the chain",
++        help="从链中选择要删除的条目",
+     )
+     fallback_subparsers.add_parser(
+         "clear",
+-        help="Remove all fallback entries",
++        help="移除所有备用条目",
+     )
+     fallback_parser.set_defaults(func=cmd_fallback)
+ 
+@@ -11261,7 +11261,7 @@ def main():
+     # =========================================================================
+     secrets_parser = subparsers.add_parser(
+         "secrets",
+-        help="Manage external secret sources (Bitwarden Secrets Manager)",
++        help="管理外部密钥源（Bitwarden Secrets Manager）",
+         description=(
+             "Pull API keys from an external secret manager at process startup "
+             "instead of storing them in ~/.hermes/.env.  Currently supports "
+@@ -11274,7 +11274,7 @@ def main():
+     secrets_bw = secrets_subparsers.add_parser(
+         "bitwarden",
+         aliases=["bw"],
+-        help="Bitwarden Secrets Manager integration",
++        help="Bitwarden Secrets Manager 集成",
+     )
+ 
+     # Lazy import — only pays for itself when this subcommand is actually used.
+@@ -11299,7 +11299,7 @@ def main():
+ 
+     migrate_parser = subparsers.add_parser(
+         "migrate",
+-        help="Migrate configuration for retired models or deprecated settings",
++        help="迁移已退役模型或弃用设置的配置",
+         description=(
+             "Diagnose and (optionally) rewrite the active config.yaml to "
+             "replace references to retired models or deprecated settings."
+@@ -11309,7 +11309,7 @@ def main():
+ 
+     migrate_xai = migrate_subparsers.add_parser(
+         "xai",
+-        help="Migrate xAI models scheduled for retirement on May 15, 2026",
++        help="迁移计划于 2026 年 5 月 15 日退役的 xAI 模型",
+         description=(
+             "Scan config.yaml for references to xAI models retiring on "
+             "May 15, 2026 and, with --apply, rewrite them in-place to the "
+@@ -11320,12 +11320,12 @@ def main():
+     migrate_xai.add_argument(
+         "--apply",
+         action="store_true",
+-        help="Rewrite config.yaml in-place (default: dry-run, no writes)",
++        help="原地重写 config.yaml（默认：试运行，不写入）",
+     )
+     migrate_xai.add_argument(
+         "--no-backup",
+         action="store_true",
+-        help="Skip the timestamped backup of config.yaml when applying",
++        help="应用时跳过 config.yaml 的时间戳备份",
+     )
+     migrate_xai.set_defaults(func=cmd_migrate_xai)
+     migrate_parser.set_defaults(func=cmd_migrate)
+@@ -11336,7 +11336,7 @@ def main():
+     gateway_parser = subparsers.add_parser(
+         "gateway",
+         help="Messaging gateway management",
+-        description="Manage the messaging gateway (Telegram, Discord, WhatsApp, Weixin, and more)",
++        description="管理消息网关（Telegram、Discord、WhatsApp、微信等）",
+     )
+     gateway_subparsers = gateway_parser.add_subparsers(dest="gateway_command")
+ 
+@@ -11391,7 +11391,7 @@ def main():
+     )
+ 
+     # gateway stop
+-    gateway_stop = gateway_subparsers.add_parser("stop", help="Stop gateway service")
++    gateway_stop = gateway_subparsers.add_parser("stop", help="停止网关服务")
+     gateway_stop.add_argument(
+         "--system",
+         action="store_true",
+@@ -11405,7 +11405,7 @@ def main():
+ 
+     # gateway restart
+     gateway_restart = gateway_subparsers.add_parser(
+-        "restart", help="Restart gateway service"
++        "restart", help="重启网关服务"
+     )
+     gateway_restart.add_argument(
+         "--system",
+@@ -11419,8 +11419,8 @@ def main():
+     )
+ 
+     # gateway status
+-    gateway_status = gateway_subparsers.add_parser("status", help="Show gateway status")
+-    gateway_status.add_argument("--deep", action="store_true", help="Deep status check")
++    gateway_status = gateway_subparsers.add_parser("status", help="显示网关状态")
++    gateway_status.add_argument("--deep", action="store_true", help="深度状态检查")
+     gateway_status.add_argument(
+         "-l",
+         "--full",
+@@ -11437,7 +11437,7 @@ def main():
+     gateway_install = gateway_subparsers.add_parser(
+         "install", help="Install gateway as a systemd/launchd background service"
+     )
+-    gateway_install.add_argument("--force", action="store_true", help="Force reinstall")
++    gateway_install.add_argument("--force", action="store_true", help="强制重新安装")
+     gateway_install.add_argument(
+         "--system",
+         action="store_true",
+@@ -11483,7 +11483,7 @@ def main():
+ 
+     # gateway uninstall
+     gateway_uninstall = gateway_subparsers.add_parser(
+-        "uninstall", help="Uninstall gateway service"
++        "uninstall", help="卸载网关服务"
+     )
+     gateway_uninstall.add_argument(
+         "--system",
+@@ -11492,10 +11492,10 @@ def main():
+     )
+ 
+     # gateway list
+-    gateway_subparsers.add_parser("list", help="List all profiles and their gateway status")
++    gateway_subparsers.add_parser("list", help="列出所有配置文件及其网关状态")
+ 
+     # gateway setup
+-    gateway_subparsers.add_parser("setup", help="Configure messaging platforms")
++    gateway_subparsers.add_parser("setup", help="配置消息平台")
+ 
+     # gateway migrate-legacy
+     gateway_migrate_legacy = gateway_subparsers.add_parser(
+@@ -11519,7 +11519,7 @@ def main():
+         "--yes",
+         dest="yes",
+         action="store_true",
+-        help="Skip the confirmation prompt",
++        help="跳过确认提示",
+     )
+ 
+     # =========================================================================
+@@ -11586,7 +11586,7 @@ def main():
+     setup_parser = subparsers.add_parser(
+         "setup",
+         help="Interactive setup wizard",
+-        description="Configure Hermes Agent with an interactive wizard. "
++        description="通过交互式向导配置 Hermes Agent。"
+         "Run a specific section: hermes setup model|tts|terminal|gateway|tools|agent",
+     )
+     setup_parser.add_argument(
+@@ -11632,7 +11632,7 @@ def main():
+     postinstall_parser = subparsers.add_parser(
+         "postinstall",
+         help="Bootstrap non-Python deps for pip installs (node, browser, ripgrep, ffmpeg)",
+-        description="One-shot post-install for pip users. Installs system "
++        description="为 pip 用户的一次性后安装。安装系统 "
+         "dependencies that pip cannot provide, then runs setup if needed.",
+     )
+     postinstall_parser.set_defaults(func=cmd_postinstall)
+@@ -11643,7 +11643,7 @@ def main():
+     whatsapp_parser = subparsers.add_parser(
+         "whatsapp",
+         help="Set up WhatsApp integration",
+-        description="Configure WhatsApp and pair via QR code",
++        description="配置 WhatsApp 并通过二维码配对",
+     )
+     whatsapp_parser.set_defaults(func=cmd_whatsapp)
+ 
+@@ -11653,7 +11653,7 @@ def main():
+     slack_parser = subparsers.add_parser(
+         "slack",
+         help="Slack integration helpers (manifest generation, etc.)",
+-        description="Slack integration helpers for Hermes.",
++        description="Hermes 的 Slack 集成辅助工具。",
+     )
+     slack_sub = slack_parser.add_subparsers(dest="slack_command")
+     slack_manifest = slack_sub.add_parser(
+@@ -11707,7 +11707,7 @@ def main():
+     login_parser = subparsers.add_parser(
+         "login",
+         help="Authenticate with an inference provider",
+-        description="Run OAuth device authorization flow for Hermes CLI",
++        description="运行 Hermes CLI 的 OAuth 设备授权流程",
+     )
+     login_parser.add_argument(
+         "--provider",
+@@ -11753,7 +11753,7 @@ def main():
+     logout_parser = subparsers.add_parser(
+         "logout",
+         help="Clear authentication for an inference provider",
+-        description="Remove stored credentials and reset provider config",
++        description="移除存储的凭据并重置提供商配置",
+     )
+     logout_parser.add_argument(
+         "--provider",
+@@ -11768,7 +11768,7 @@ def main():
+         help="Manage pooled provider credentials",
+     )
+     auth_subparsers = auth_parser.add_subparsers(dest="auth_action")
+-    auth_add = auth_subparsers.add_parser("add", help="Add a pooled credential")
++    auth_add = auth_subparsers.add_parser("add", help="添加池化凭据")
+     auth_add.add_argument(
+         "provider",
+         help="Provider id (for example: anthropic, openai-codex, openrouter)",
+@@ -11812,7 +11812,7 @@ def main():
+         help="Disable TLS verification for OAuth login",
+     )
+     auth_add.add_argument("--ca-bundle", help="Custom CA bundle for OAuth login")
+-    auth_list = auth_subparsers.add_parser("list", help="List pooled credentials")
++    auth_list = auth_subparsers.add_parser("list", help="列出池化凭据")
+     auth_list.add_argument("provider", nargs="?", help="Optional provider filter")
+     auth_remove = auth_subparsers.add_parser(
+         "remove", help="Remove a pooled credential by index, id, or label"
+@@ -11866,7 +11866,7 @@ def main():
+     status_parser = subparsers.add_parser(
+         "status",
+         help="Show status of all components",
+-        description="Display status of Hermes Agent components",
++        description="显示 Hermes Agent 组件的状态",
+     )
+     status_parser.add_argument(
+         "--all", action="store_true", help="Show all details (redacted for sharing)"
+@@ -11880,17 +11880,17 @@ def main():
+     # cron command
+     # =========================================================================
+     cron_parser = subparsers.add_parser(
+-        "cron", help="Cron job management", description="Manage scheduled tasks"
++        "cron", help="Cron job management", description="管理计划任务"
+     )
+     cron_subparsers = cron_parser.add_subparsers(dest="cron_command")
+ 
+     # cron list
+-    cron_list = cron_subparsers.add_parser("list", help="List scheduled jobs")
++    cron_list = cron_subparsers.add_parser("list", help="列出计划作业")
+     cron_list.add_argument("--all", action="store_true", help="Include disabled jobs")
+ 
+     # cron create/add
+     cron_create = cron_subparsers.add_parser(
+-        "create", aliases=["add"], help="Create a scheduled job"
++        "create", aliases=["add"], help="创建计划作业"
+     )
+     cron_create.add_argument(
+         "schedule", help="Schedule like '30m', 'every 2h', or '0 9 * * *'"
+@@ -11901,7 +11901,7 @@ def main():
+     cron_create.add_argument("--name", help="Optional human-friendly job name")
+     cron_create.add_argument(
+         "--deliver",
+-        help="Delivery target: origin, local, telegram, discord, signal, or platform:chat_id",
++        help="交付目标：origin、local、telegram、discord、signal 或 platform:chat_id",
+     )
+     cron_create.add_argument("--repeat", type=int, help="Optional repeat count")
+     cron_create.add_argument(
+@@ -11944,12 +11944,12 @@ def main():
+     cron_edit = cron_subparsers.add_parser(
+         "edit", help="Edit an existing scheduled job"
+     )
+-    cron_edit.add_argument("job_id", help="Job ID to edit")
+-    cron_edit.add_argument("--schedule", help="New schedule")
+-    cron_edit.add_argument("--prompt", help="New prompt/task instruction")
+-    cron_edit.add_argument("--name", help="New job name")
+-    cron_edit.add_argument("--deliver", help="New delivery target")
+-    cron_edit.add_argument("--repeat", type=int, help="New repeat count")
++    cron_edit.add_argument("job_id", help="要编辑的作业 ID")
++    cron_edit.add_argument("--schedule", help="新调度")
++    cron_edit.add_argument("--prompt", help="新提示/任务指令")
++    cron_edit.add_argument("--name", help="新作业名称")
++    cron_edit.add_argument("--deliver", help="新交付目标")
++    cron_edit.add_argument("--repeat", type=int, help="新重复次数")
+     cron_edit.add_argument(
+         "--skill",
+         dest="skills",
+@@ -12009,28 +12009,28 @@ def main():
+     )
+ 
+     # lifecycle actions
+-    cron_pause = cron_subparsers.add_parser("pause", help="Pause a scheduled job")
+-    cron_pause.add_argument("job_id", help="Job ID to pause")
++    cron_pause = cron_subparsers.add_parser("pause", help="暂停计划作业")
++    cron_pause.add_argument("job_id", help="要暂停的作业 ID")
+ 
+-    cron_resume = cron_subparsers.add_parser("resume", help="Resume a paused job")
+-    cron_resume.add_argument("job_id", help="Job ID to resume")
++    cron_resume = cron_subparsers.add_parser("resume", help="恢复已暂停的作业")
++    cron_resume.add_argument("job_id", help="要恢复的作业 ID")
+ 
+     cron_run = cron_subparsers.add_parser(
+         "run", help="Run a job on the next scheduler tick"
+     )
+-    cron_run.add_argument("job_id", help="Job ID to trigger")
++    cron_run.add_argument("job_id", help="要触发的作业 ID")
+     _add_accept_hooks_flag(cron_run)
+ 
+     cron_remove = cron_subparsers.add_parser(
+-        "remove", aliases=["rm", "delete"], help="Remove a scheduled job"
++        "remove", aliases=["rm", "delete"], help="移除计划作业"
+     )
+-    cron_remove.add_argument("job_id", help="Job ID to remove")
++    cron_remove.add_argument("job_id", help="要移除的作业 ID")
+ 
+     # cron status
+-    cron_subparsers.add_parser("status", help="Check if cron scheduler is running")
++    cron_subparsers.add_parser("status", help="检查 cron 调度器是否正在运行")
+ 
+     # cron tick (mostly for debugging)
+-    cron_tick = cron_subparsers.add_parser("tick", help="Run due jobs once and exit")
++    cron_tick = cron_subparsers.add_parser("tick", help="运行到期作业一次然后退出")
+     _add_accept_hooks_flag(cron_tick)
+     _add_accept_hooks_flag(cron_parser)
+     cron_parser.set_defaults(func=cmd_cron)
+@@ -12040,8 +12040,8 @@ def main():
+     # =========================================================================
+     webhook_parser = subparsers.add_parser(
+         "webhook",
+-        help="Manage dynamic webhook subscriptions",
+-        description="Create, list, and remove webhook subscriptions for event-driven agent activation",
++        help="管理动态 webhook 订阅",
++        description="创建、列出和移除用于事件驱动代理激活的 webhook 订阅",
+     )
+     webhook_subparsers = webhook_parser.add_subparsers(dest="webhook_action")
+ 
+@@ -12085,12 +12085,12 @@ def main():
+     )
+ 
+     wh_rm = webhook_subparsers.add_parser(
+-        "remove", aliases=["rm"], help="Remove a subscription"
++        "remove", aliases=["rm"], help="移除订阅"
+     )
+-    wh_rm.add_argument("name", help="Subscription name to remove")
++    wh_rm.add_argument("name", help="要移除的订阅名称")
+ 
+     wh_test = webhook_subparsers.add_parser(
+-        "test", help="Send a test POST to a webhook route"
++        "test", help="发送测试 POST 到 webhook 路由"
+     )
+     wh_test.add_argument("name", help="Subscription name to test")
+     wh_test.add_argument(
+@@ -12118,7 +12118,7 @@ def main():
+     # =========================================================================
+     hooks_parser = subparsers.add_parser(
+         "hooks",
+-        help="Inspect and manage shell-script hooks",
++        help="检查和管理 shell 脚本钩子",
+         description=(
+             "Inspect shell-script hooks declared in ~/.hermes/config.yaml, "
+             "test them against synthetic payloads, and manage the first-use "
+@@ -12185,11 +12185,11 @@ def main():
+     # =========================================================================
+     doctor_parser = subparsers.add_parser(
+         "doctor",
+-        help="Check configuration and dependencies",
+-        description="Diagnose issues with Hermes Agent setup",
++        help="检查配置和依赖",
++        description="诊断 Hermes Agent 设置问题",
+     )
+     doctor_parser.add_argument(
+-        "--fix", action="store_true", help="Attempt to fix issues automatically"
++        "--fix", action="store_true", help="尝试自动修复问题"
+     )
+     doctor_parser.add_argument(
+         "--ack",
+@@ -12208,7 +12208,7 @@ def main():
+     # =========================================================================
+     security_parser = subparsers.add_parser(
+         "security",
+-        help="Supply-chain audit (OSV.dev) for venv, plugins, and MCP servers",
++        help="供应链审计（OSV.dev）针对 venv、插件和 MCP 服务器",
+         description=(
+             "On-demand vulnerability scan against OSV.dev. Covers the Hermes "
+             "venv (installed PyPI dists), Python deps declared by plugins under "
+@@ -12223,8 +12223,8 @@ def main():
+ 
+     audit_parser = security_subparsers.add_parser(
+         "audit",
+-        help="Run a one-shot supply-chain audit",
+-        description="Query OSV.dev for known vulnerabilities in installed components.",
++        help="运行一次性供应链审计",
++        description="查询 OSV.dev 以获取已安装组件中的已知漏洞。",
+     )
+     audit_parser.add_argument(
+         "--json",
+@@ -12261,7 +12261,7 @@ def main():
+     dump_parser = subparsers.add_parser(
+         "dump",
+         help="Dump setup summary for support/debugging",
+-        description="Output a compact, plain-text summary of your Hermes setup "
++        description="输出紧凑的纯文本 Hermes 设置摘要，"
+         "that can be copy-pasted into Discord/GitHub for support context",
+     )
+     dump_parser.add_argument(
+@@ -12276,8 +12276,8 @@ def main():
+     # =========================================================================
+     debug_parser = subparsers.add_parser(
+         "debug",
+-        help="Debug tools — upload logs and system info for support",
+-        description="Debug utilities for Hermes Agent. Use 'hermes debug share' to "
++        help="调试工具 — 上传日志和系统信息以获取支持",
++        description="Hermes Agent 的调试工具。使用 'hermes debug share' 来 "
+         "upload a debug report (system info + recent logs) to a paste "
+         "service and get a shareable URL.",
+         formatter_class=argparse.RawDescriptionHelpFormatter,
+@@ -12294,7 +12294,7 @@ Examples:
+     debug_sub = debug_parser.add_subparsers(dest="debug_command")
+     share_parser = debug_sub.add_parser(
+         "share",
+-        help="Upload debug report to a paste service and print a shareable URL",
++        help="上传调试报告到粘贴服务并打印可分享 URL",
+     )
+     share_parser.add_argument(
+         "--lines",
+@@ -12340,8 +12340,8 @@ Examples:
+     # =========================================================================
+     backup_parser = subparsers.add_parser(
+         "backup",
+-        help="Back up Hermes home directory to a zip file",
+-        description="Create a zip archive of your entire Hermes configuration, "
++        help="将 Hermes 主目录备份到 zip 文件",
++        description="创建整个 Hermes 配置的 zip 归档，"
+         "skills, sessions, and data (excludes the hermes-agent codebase). "
+         "Use --quick for a fast snapshot of just critical state files.",
+     )
+@@ -12367,7 +12367,7 @@ Examples:
+     checkpoints_parser = subparsers.add_parser(
+         "checkpoints",
+         help="Inspect / prune / clear ~/.hermes/checkpoints/",
+-        description="Manage the filesystem checkpoint store — the shadow git "
++        description="管理文件系统检查点存储 — 影子 git "
+         "repo hermes uses to snapshot working directories before "
+         "write_file/patch/terminal calls. Lets you see how much "
+         "space checkpoints occupy, force a prune, or wipe the base.",
+@@ -12380,17 +12380,17 @@ Examples:
+     # =========================================================================
+     import_parser = subparsers.add_parser(
+         "import",
+-        help="Restore a Hermes backup from a zip file",
+-        description="Extract a previously created Hermes backup into your "
++        help="从 zip 文件恢复 Hermes 备份",
++        description="将之前创建的 Hermes 备份提取到您的 "
+         "Hermes home directory, restoring configuration, skills, "
+         "sessions, and data",
+     )
+-    import_parser.add_argument("zipfile", help="Path to the backup zip file")
++    import_parser.add_argument("zipfile", help="备份 zip 文件的路径")
+     import_parser.add_argument(
+         "--force",
+         "-f",
+         action="store_true",
+-        help="Overwrite existing files without confirmation",
++        help="覆盖现有文件而不确认",
+     )
+     import_parser.set_defaults(func=cmd_import)
+ 
+@@ -12400,34 +12400,34 @@ Examples:
+     config_parser = subparsers.add_parser(
+         "config",
+         help="View and edit configuration",
+-        description="Manage Hermes Agent configuration",
++        description="管理 Hermes Agent 配置",
+     )
+     config_subparsers = config_parser.add_subparsers(dest="config_command")
+ 
+     # config show (default)
+-    config_subparsers.add_parser("show", help="Show current configuration")
++    config_subparsers.add_parser("show", help="显示当前配置")
+ 
+     # config edit
+-    config_subparsers.add_parser("edit", help="Open config file in editor")
++    config_subparsers.add_parser("edit", help="在编辑器中打开配置文件")
+ 
+     # config set
+-    config_set = config_subparsers.add_parser("set", help="Set a configuration value")
++    config_set = config_subparsers.add_parser("set", help="设置配置值")
+     config_set.add_argument(
+         "key", nargs="?", help="Configuration key (e.g., model, terminal.backend)"
+     )
+     config_set.add_argument("value", nargs="?", help="Value to set")
+ 
+     # config path
+-    config_subparsers.add_parser("path", help="Print config file path")
++    config_subparsers.add_parser("path", help="打印配置文件路径")
+ 
+     # config env-path
+-    config_subparsers.add_parser("env-path", help="Print .env file path")
++    config_subparsers.add_parser("env-path", help="打印 .env 文件路径")
+ 
+     # config check
+-    config_subparsers.add_parser("check", help="Check for missing/outdated config")
++    config_subparsers.add_parser("check", help="检查缺失/过时的配置")
+ 
+     # config migrate
+-    config_subparsers.add_parser("migrate", help="Update config with new options")
++    config_subparsers.add_parser("migrate", help="用新选项更新配置")
+ 
+     config_parser.set_defaults(func=cmd_config)
+ 
+@@ -12436,26 +12436,26 @@ Examples:
+     # =========================================================================
+     pairing_parser = subparsers.add_parser(
+         "pairing",
+-        help="Manage DM pairing codes for user authorization",
+-        description="Approve or revoke user access via pairing codes",
++        help="管理 DM 配对码用于用户授权",
++        description="通过配对码批准或撤销用户访问",
+     )
+     pairing_sub = pairing_parser.add_subparsers(dest="pairing_action")
+ 
+-    pairing_sub.add_parser("list", help="Show pending + approved users")
++    pairing_sub.add_parser("list", help="显示待处理和已批准的用户")
+ 
+     pairing_approve_parser = pairing_sub.add_parser(
+-        "approve", help="Approve a pairing code"
++        "approve", help="批准配对码"
+     )
+     pairing_approve_parser.add_argument(
+         "platform", help="Platform name (telegram, discord, slack, whatsapp)"
+     )
+     pairing_approve_parser.add_argument("code", help="Pairing code to approve")
+ 
+-    pairing_revoke_parser = pairing_sub.add_parser("revoke", help="Revoke user access")
++    pairing_revoke_parser = pairing_sub.add_parser("revoke", help="撤销用户访问权限")
+     pairing_revoke_parser.add_argument("platform", help="Platform name")
+     pairing_revoke_parser.add_argument("user_id", help="User ID to revoke")
+ 
+-    pairing_sub.add_parser("clear-pending", help="Clear all pending codes")
++    pairing_sub.add_parser("clear-pending", help="清除所有待处理码")
+ 
+     def cmd_pairing(args):
+         from hermes_cli.pairing import pairing_command
+@@ -12470,7 +12470,7 @@ Examples:
+     skills_parser = subparsers.add_parser(
+         "skills",
+         help="Search, install, configure, and manage skills",
+-        description="Search, install, inspect, audit, configure, and manage skills from skills.sh, well-known agent skill endpoints, GitHub, ClawHub, and other registries.",
++        description="从 skills.sh、已知代理技能端点、GitHub、ClawHub 和其他注册表搜索、安装、检查、审核、配置和管理技能。",
+     )
+     skills_subparsers = skills_parser.add_subparsers(dest="skills_action")
+ 
+@@ -12478,10 +12478,10 @@ Examples:
+         "browse", help="Browse all available skills (paginated)"
+     )
+     skills_browse.add_argument(
+-        "--page", type=int, default=1, help="Page number (default: 1)"
++        "--page", type=int, default=1, help="页码（默认：1）"
+     )
+     skills_browse.add_argument(
+-        "--size", type=int, default=20, help="Results per page (default: 20)"
++        "--size", type=int, default=20, help="每页结果数（默认：20）"
+     )
+     skills_browse.add_argument(
+         "--source",
+@@ -12496,13 +12496,13 @@ Examples:
+             "lobehub",
+             "browse-sh",
+         ],
+-        help="Filter by source (default: all)",
++        help="按来源过滤（默认：全部）",
+     )
+ 
+     skills_search = skills_subparsers.add_parser(
+-        "search", help="Search skill registries"
++        "search", help="搜索技能注册表"
+     )
+-    skills_search.add_argument("query", help="Search query")
++    skills_search.add_argument("query", help="搜索查询")
+     skills_search.add_argument(
+         "--source",
+         default="all",
+@@ -12517,9 +12517,9 @@ Examples:
+             "browse-sh",
+         ],
+     )
+-    skills_search.add_argument("--limit", type=int, default=10, help="Max results")
++    skills_search.add_argument("--limit", type=int, default=10, help="最大结果数")
+ 
+-    skills_install = skills_subparsers.add_parser("install", help="Install a skill")
++    skills_install = skills_subparsers.add_parser("install", help="安装技能")
+     skills_install.add_argument(
+         "identifier",
+         help="Skill identifier (e.g. openai/skills/skill-creator) or a direct HTTP(S) URL to a SKILL.md file",
+@@ -12539,15 +12539,15 @@ Examples:
+         "--yes",
+         "-y",
+         action="store_true",
+-        help="Skip confirmation prompt (needed in TUI mode)",
++        help="跳过确认提示（TUI 模式需要）",
+     )
+ 
+     skills_inspect = skills_subparsers.add_parser(
+         "inspect", help="Preview a skill without installing"
+     )
+-    skills_inspect.add_argument("identifier", help="Skill identifier")
++    skills_inspect.add_argument("identifier", help="技能标识符")
+ 
+-    skills_list = skills_subparsers.add_parser("list", help="List installed skills")
++    skills_list = skills_subparsers.add_parser("list", help="列出已安装技能")
+     skills_list.add_argument(
+         "--source", default="all", choices=["all", "hub", "builtin", "local"]
+     )
+@@ -12562,11 +12562,11 @@ Examples:
+         "check", help="Check installed hub skills for updates"
+     )
+     skills_check.add_argument(
+-        "name", nargs="?", help="Specific skill to check (default: all)"
++        "name", nargs="?", help="要检查的特定技能（默认：全部）"
+     )
+ 
+     skills_update = skills_subparsers.add_parser(
+-        "update", help="Update installed hub skills"
++        "update", help="更新已安装的集线器技能"
+     )
+     skills_update.add_argument(
+         "name",
+@@ -12587,9 +12587,9 @@ Examples:
+     )
+ 
+     skills_uninstall = skills_subparsers.add_parser(
+-        "uninstall", help="Remove a hub-installed skill"
++        "uninstall", help="移除集线器安装的技能"
+     )
+-    skills_uninstall.add_argument("name", help="Skill name to remove")
++    skills_uninstall.add_argument("name", help="要移除的技能名称")
+ 
+     skills_reset = skills_subparsers.add_parser(
+         "reset",
+@@ -12612,7 +12612,7 @@ Examples:
+         "--yes",
+         "-y",
+         action="store_true",
+-        help="Skip confirmation prompt when using --restore",
++        help="使用 --restore 时跳过确认提示",
+     )
+ 
+     skills_repair_official = skills_subparsers.add_parser(
+@@ -12637,7 +12637,7 @@ Examples:
+         "--yes",
+         "-y",
+         action="store_true",
+-        help="Skip confirmation prompt when using --restore",
++        help="使用 --restore 时跳过确认提示",
+     )
+ 
+     skills_publish = skills_subparsers.add_parser(
+@@ -12667,12 +12667,12 @@ Examples:
+         "--force", action="store_true", help="Force install despite caution verdict"
+     )
+ 
+-    skills_tap = skills_subparsers.add_parser("tap", help="Manage skill sources")
++    skills_tap = skills_subparsers.add_parser("tap", help="管理技能来源")
+     tap_subparsers = skills_tap.add_subparsers(dest="tap_action")
+-    tap_subparsers.add_parser("list", help="List configured taps")
+-    tap_add = tap_subparsers.add_parser("add", help="Add a GitHub repo as skill source")
++    tap_subparsers.add_parser("list", help="列出已配置的源")
++    tap_add = tap_subparsers.add_parser("add", help="添加 GitHub 仓库作为技能来源")
+     tap_add.add_argument("repo", help="GitHub repo (e.g. owner/repo)")
+-    tap_rm = tap_subparsers.add_parser("remove", help="Remove a tap")
++    tap_rm = tap_subparsers.add_parser("remove", help="移除源")
+     tap_rm.add_argument("name", help="Tap name to remove")
+ 
+     # config sub-action: interactive enable/disable
+@@ -12700,7 +12700,7 @@ Examples:
+     # =========================================================================
+     bundles_parser = subparsers.add_parser(
+         "bundles",
+-        help="Create, list, and manage skill bundles (aliases for multiple skills)",
++        help="创建、列出和管理技能包（多个技能的别名）",
+         description=(
+             "Skill bundles let you load several skills under one slash "
+             "command. `/<bundle>` from the CLI or gateway loads every "
+@@ -12716,13 +12716,13 @@ Examples:
+     # =========================================================================
+     plugins_parser = subparsers.add_parser(
+         "plugins",
+-        help="Manage plugins — install, update, remove, list",
+-        description="Install plugins from Git repositories, update, remove, or list them.",
++        help="管理插件 — 安装、更新、移除、列出",
++        description="从 Git 仓库安装插件，更新、移除或列出它们。",
+     )
+     plugins_subparsers = plugins_parser.add_subparsers(dest="plugins_action")
+ 
+     plugins_install = plugins_subparsers.add_parser(
+-        "install", help="Install a plugin from a Git URL or owner/repo"
++        "install", help="从 Git URL 或所有者/仓库安装插件"
+     )
+     plugins_install.add_argument(
+         "identifier",
+@@ -12752,11 +12752,11 @@ Examples:
+     plugins_update.add_argument("name", help="Plugin name to update")
+ 
+     plugins_remove = plugins_subparsers.add_parser(
+-        "remove", aliases=["rm", "uninstall"], help="Remove an installed plugin"
++        "remove", aliases=["rm", "uninstall"], help="移除已安装的插件"
+     )
+     plugins_remove.add_argument("name", help="Plugin directory name to remove")
+ 
+-    plugins_subparsers.add_parser("list", aliases=["ls"], help="List installed plugins")
++    plugins_subparsers.add_parser("list", aliases=["ls"], help="列出已安装的插件")
+ 
+     plugins_enable = plugins_subparsers.add_parser(
+         "enable", help="Enable a disabled plugin"
+@@ -12825,7 +12825,7 @@ Examples:
+     # =========================================================================
+     curator_parser = subparsers.add_parser(
+         "curator",
+-        help="Background skill maintenance (curator) — status, run, pause, pin",
++        help="后台技能维护（策展人）— 状态、运行、暂停、固定",
+         description=(
+             "The curator is an auxiliary-model background task that "
+             "periodically reviews agent-created skills, prunes stale ones, "
+@@ -12846,7 +12846,7 @@ Examples:
+     # =========================================================================
+     memory_parser = subparsers.add_parser(
+         "memory",
+-        help="Configure external memory provider",
++        help="配置外部记忆提供商",
+         description=(
+             "Set up and manage external memory provider plugins.\n\n"
+             "Available providers: honcho, openviking, mem0, hindsight,\n"
+@@ -12859,8 +12859,8 @@ Examples:
+     memory_sub.add_parser(
+         "setup", help="Interactive provider selection and configuration"
+     )
+-    memory_sub.add_parser("status", help="Show current memory provider config")
+-    memory_sub.add_parser("off", help="Disable external provider (built-in only)")
++    memory_sub.add_parser("status", help="显示当前记忆提供商配置")
++    memory_sub.add_parser("off", help="禁用外部提供商（仅内置）")
+     _reset_parser = memory_sub.add_parser(
+         "reset",
+         help="Erase all built-in memory (MEMORY.md and USER.md)",
+@@ -12869,7 +12869,7 @@ Examples:
+         "--yes",
+         "-y",
+         action="store_true",
+-        help="Skip confirmation prompt",
++        help="跳过确认提示",
+     )
+     _reset_parser.add_argument(
+         "--target",
+@@ -12947,7 +12947,7 @@ Examples:
+     # =========================================================================
+     tools_parser = subparsers.add_parser(
+         "tools",
+-        help="Configure which tools are enabled per platform",
++        help="配置每个平台启用的工具",
+         description=(
+             "Enable, disable, or list tools for CLI, Telegram, Discord, etc.\n\n"
+             "Built-in toolsets use plain names (e.g. web, memory).\n"
+@@ -12965,7 +12965,7 @@ Examples:
+     # hermes tools list [--platform cli]
+     tools_list_p = tools_sub.add_parser(
+         "list",
+-        help="Show all tools and their enabled/disabled status",
++        help="显示所有工具及其启用/禁用状态",
+     )
+     tools_list_p.add_argument(
+         "--platform",
+@@ -12976,7 +12976,7 @@ Examples:
+     # hermes tools disable <name...> [--platform cli]
+     tools_disable_p = tools_sub.add_parser(
+         "disable",
+-        help="Disable toolsets or MCP tools",
++        help="禁用工具集或 MCP 工具",
+     )
+     tools_disable_p.add_argument(
+         "names",
+@@ -12993,7 +12993,7 @@ Examples:
+     # hermes tools enable <name...> [--platform cli]
+     tools_enable_p = tools_sub.add_parser(
+         "enable",
+-        help="Enable toolsets or MCP tools",
++        help="启用工具集或 MCP 工具",
+     )
+     tools_enable_p.add_argument(
+         "names",
+@@ -13118,9 +13118,9 @@ Examples:
+     _add_accept_hooks_flag(mcp_serve_p)
+ 
+     mcp_add_p = mcp_sub.add_parser(
+-        "add", help="Add an MCP server (discovery-first install)"
++        "add", help="添加 MCP 服务器（先发现后安装）"
+     )
+-    mcp_add_p.add_argument("name", help="Server name (used as config key)")
++    mcp_add_p.add_argument("name", help="服务器名称（用作配置键）")
+     mcp_add_p.add_argument("--url", help="HTTP/SSE endpoint URL")
+     # dest="mcp_command" so this flag does not clobber the top-level
+     # subparser's args.command attribute, which the dispatcher reads to
+@@ -13143,13 +13143,13 @@ Examples:
+         help="Environment variables for stdio servers (KEY=VALUE)",
+     )
+ 
+-    mcp_rm_p = mcp_sub.add_parser("remove", aliases=["rm"], help="Remove an MCP server")
+-    mcp_rm_p.add_argument("name", help="Server name to remove")
++    mcp_rm_p = mcp_sub.add_parser("remove", aliases=["rm"], help="移除 MCP 服务器")
++    mcp_rm_p.add_argument("name", help="要移除的服务器名称")
+ 
+-    mcp_sub.add_parser("list", aliases=["ls"], help="List configured MCP servers")
++    mcp_sub.add_parser("list", aliases=["ls"], help="列出已配置的 MCP 服务器")
+ 
+-    mcp_test_p = mcp_sub.add_parser("test", help="Test MCP server connection")
+-    mcp_test_p.add_argument("name", help="Server name to test")
++    mcp_test_p = mcp_sub.add_parser("test", help="测试 MCP 服务器连接")
++    mcp_test_p.add_argument("name", help="要测试的服务器名称")
+ 
+     mcp_cfg_p = mcp_sub.add_parser(
+         "configure", aliases=["config"], help="Toggle tool selection"
+@@ -13195,36 +13195,36 @@ Examples:
+     sessions_parser = subparsers.add_parser(
+         "sessions",
+         help="Manage session history (list, rename, export, prune, delete)",
+-        description="View and manage the SQLite session store",
++        description="查看和管理 SQLite 会话存储",
+     )
+     sessions_subparsers = sessions_parser.add_subparsers(dest="sessions_action")
+ 
+-    sessions_list = sessions_subparsers.add_parser("list", help="List recent sessions")
++    sessions_list = sessions_subparsers.add_parser("list", help="列出最近会话")
+     sessions_list.add_argument(
+-        "--source", help="Filter by source (cli, telegram, discord, etc.)"
++        "--source", help="按来源过滤（cli、telegram、discord 等）"
+     )
+     sessions_list.add_argument(
+-        "--limit", type=int, default=20, help="Max sessions to show"
++        "--limit", type=int, default=20, help="最大显示会话数"
+     )
+ 
+     sessions_export = sessions_subparsers.add_parser(
+-        "export", help="Export sessions to a JSONL file"
++        "export", help="将会话导出到 JSONL 文件"
+     )
+     sessions_export.add_argument(
+         "output", help="Output JSONL file path (use - for stdout)"
+     )
+-    sessions_export.add_argument("--source", help="Filter by source")
++    sessions_export.add_argument("--source", help="按来源过滤")
+     sessions_export.add_argument("--session-id", help="Export a specific session")
+ 
+     sessions_delete = sessions_subparsers.add_parser(
+-        "delete", help="Delete a specific session"
++        "delete", help="删除特定会话"
+     )
+     sessions_delete.add_argument("session_id", help="Session ID to delete")
+     sessions_delete.add_argument(
+-        "--yes", "-y", action="store_true", help="Skip confirmation"
++        "--yes", "-y", action="store_true", help="跳过确认"
+     )
+ 
+-    sessions_prune = sessions_subparsers.add_parser("prune", help="Delete old sessions")
++    sessions_prune = sessions_subparsers.add_parser("prune", help="删除旧会话")
+     sessions_prune.add_argument(
+         "--older-than",
+         type=int,
+@@ -13233,10 +13233,10 @@ Examples:
+     )
+     sessions_prune.add_argument("--source", help="Only prune sessions from this source")
+     sessions_prune.add_argument(
+-        "--yes", "-y", action="store_true", help="Skip confirmation"
++        "--yes", "-y", action="store_true", help="跳过确认"
+     )
+ 
+-    sessions_subparsers.add_parser("stats", help="Show session store statistics")
++    sessions_subparsers.add_parser("stats", help="显示会话存储统计信息")
+ 
+     sessions_rename = sessions_subparsers.add_parser(
+         "rename", help="Set or change a session's title"
+@@ -13249,7 +13249,7 @@ Examples:
+         help="Interactive session picker — browse, search, and resume sessions",
+     )
+     sessions_browse.add_argument(
+-        "--source", help="Filter by source (cli, telegram, discord, etc.)"
++        "--source", help="按来源过滤（cli、telegram、discord 等）"
+     )
+     sessions_browse.add_argument(
+         "--limit", type=int, default=500, help="Max sessions to load (default: 500)"
+@@ -13434,14 +13434,14 @@ Examples:
+     # =========================================================================
+     insights_parser = subparsers.add_parser(
+         "insights",
+-        help="Show usage insights and analytics",
+-        description="Analyze session history to show token usage, costs, tool patterns, and activity trends",
++        help="显示使用洞察和分析",
++        description="分析会话历史以显示 token 使用情况、成本、工具模式和活动趋势",
+     )
+     insights_parser.add_argument(
+-        "--days", type=int, default=30, help="Number of days to analyze (default: 30)"
++        "--days", type=int, default=30, help="分析天数（默认：30）"
+     )
+     insights_parser.add_argument(
+-        "--source", help="Filter by platform (cli, telegram, discord, etc.)"
++        "--source", help="按平台过滤（cli、telegram、discord 等）"
+     )
+ 
+     def cmd_insights(args):
+@@ -13464,16 +13464,16 @@ Examples:
+     # =========================================================================
+     claw_parser = subparsers.add_parser(
+         "claw",
+-        help="OpenClaw migration tools",
+-        description="Migrate settings, memories, skills, and API keys from OpenClaw to Hermes",
++        help="OpenClaw 迁移工具",
++        description="从 OpenClaw 迁移设置、记忆、技能和 API 密钥到 Hermes",
+     )
+     claw_subparsers = claw_parser.add_subparsers(dest="claw_action")
+ 
+     # claw migrate
+     claw_migrate = claw_subparsers.add_parser(
+         "migrate",
+-        help="Migrate from OpenClaw to Hermes",
+-        description="Import settings, memories, skills, and API keys from an OpenClaw installation. "
++        help="从 OpenClaw 迁移到 Hermes",
++        description="从 OpenClaw 安装导入设置、记忆、技能和 API 密钥。"
+         "Always shows a preview before making changes.",
+     )
+     claw_migrate.add_argument(
+@@ -13519,7 +13519,7 @@ Examples:
+         help="How to handle skill name conflicts (default: skip)",
+     )
+     claw_migrate.add_argument(
+-        "--yes", "-y", action="store_true", help="Skip confirmation prompts"
++        "--yes", "-y", action="store_true", help="跳过确认提示"
+     )
+ 
+     # claw cleanup
+@@ -13527,7 +13527,7 @@ Examples:
+         "cleanup",
+         aliases=["clean"],
+         help="Archive leftover OpenClaw directories after migration",
+-        description="Scan for and archive leftover OpenClaw directories to prevent state fragmentation",
++        description="扫描并存档遗留的 OpenClaw 目录以防止状态碎片化",
+     )
+     claw_cleanup.add_argument(
+         "--source", help="Path to a specific OpenClaw directory to clean up"
+@@ -13538,7 +13538,7 @@ Examples:
+         help="Preview what would be archived without making changes",
+     )
+     claw_cleanup.add_argument(
+-        "--yes", "-y", action="store_true", help="Skip confirmation prompts"
++        "--yes", "-y", action="store_true", help="跳过确认提示"
+     )
+ 
+     def cmd_claw(args):
+@@ -13551,7 +13551,7 @@ Examples:
+     # =========================================================================
+     # version command
+     # =========================================================================
+-    version_parser = subparsers.add_parser("version", help="Show version information")
++    version_parser = subparsers.add_parser("version", help="显示版本信息")
+     version_parser.set_defaults(func=cmd_version)
+ 
+     # =========================================================================
+@@ -13559,8 +13559,8 @@ Examples:
+     # =========================================================================
+     update_parser = subparsers.add_parser(
+         "update",
+-        help="Update Hermes Agent to the latest version",
+-        description="Pull the latest changes from git and reinstall dependencies",
++        help="更新 Hermes Agent 到最新版本",
++        description="从 git 拉取最新更改并重新安装依赖",
+     )
+     update_parser.add_argument(
+         "--gateway",
+@@ -13572,7 +13572,7 @@ Examples:
+         "--check",
+         action="store_true",
+         default=False,
+-        help="Check whether an update is available without installing anything",
++        help="检查是否有可用更新而不安装任何内容",
+     )
+     update_parser.add_argument(
+         "--no-backup",
+@@ -13617,8 +13617,8 @@ Examples:
+     # =========================================================================
+     uninstall_parser = subparsers.add_parser(
+         "uninstall",
+-        help="Uninstall Hermes Agent",
+-        description="Remove Hermes Agent from your system. Can keep configs/data for reinstall.",
++        help="卸载 Hermes Agent",
++        description="从系统中移除 Hermes Agent。可保留配置/数据以便重新安装。",
+     )
+     uninstall_parser.add_argument(
+         "--full",
+@@ -13626,7 +13626,7 @@ Examples:
+         help="Full uninstall - remove everything including configs and data",
+     )
+     uninstall_parser.add_argument(
+-        "--yes", "-y", action="store_true", help="Skip confirmation prompts"
++        "--yes", "-y", action="store_true", help="跳过确认提示"
+     )
+     uninstall_parser.set_defaults(func=cmd_uninstall)
+ 
+@@ -13635,8 +13635,8 @@ Examples:
+     # =========================================================================
+     acp_parser = subparsers.add_parser(
+         "acp",
+-        help="Run Hermes Agent as an ACP (Agent Client Protocol) server",
+-        description="Start Hermes Agent in ACP mode for editor integration (VS Code, Zed, JetBrains)",
++        help="将 Hermes Agent 作为 ACP 服务器运行",
++        description="以 ACP 模式启动 Hermes Agent 以进行编辑器集成（VS Code、Zed、JetBrains）",
+     )
+     _add_accept_hooks_flag(acp_parser)
+     acp_parser.add_argument(
+@@ -13703,17 +13703,17 @@ Examples:
+     )
+     profile_subparsers = profile_parser.add_subparsers(dest="profile_action")
+ 
+-    profile_subparsers.add_parser("list", help="List all profiles")
++    profile_subparsers.add_parser("list", help="列出所有配置文件")
+     profile_use = profile_subparsers.add_parser(
+-        "use", help="Set sticky default profile"
++        "use", help="设置粘性默认配置文件"
+     )
+-    profile_use.add_argument("profile_name", help="Profile name (or 'default')")
++    profile_use.add_argument("profile_name", help="配置文件名称（或 'default'）")
+ 
+     profile_create = profile_subparsers.add_parser(
+-        "create", help="Create a new profile"
++        "create", help="创建新配置文件"
+     )
+     profile_create.add_argument(
+-        "profile_name", help="Profile name (lowercase, alphanumeric)"
++        "profile_name", help="配置文件名称（小写字母数字）"
+     )
+     profile_create.add_argument(
+         "--clone",
+@@ -13746,10 +13746,10 @@ Examples:
+              "of profile name alone. Skip and add later via `hermes profile describe`.",
+     )
+ 
+-    profile_delete = profile_subparsers.add_parser("delete", help="Delete a profile")
+-    profile_delete.add_argument("profile_name", help="Profile to delete")
++    profile_delete = profile_subparsers.add_parser("delete", help="删除配置文件")
++    profile_delete.add_argument("profile_name", help="要删除的配置文件")
+     profile_delete.add_argument(
+-        "-y", "--yes", action="store_true", help="Skip confirmation prompt"
++        "-y", "--yes", action="store_true", help="跳过确认提示"
+     )
+ 
+     profile_describe = profile_subparsers.add_parser(
+@@ -13786,13 +13786,13 @@ Examples:
+         help="With --auto, run on every profile missing a description",
+     )
+ 
+-    profile_show = profile_subparsers.add_parser("show", help="Show profile details")
+-    profile_show.add_argument("profile_name", help="Profile to show")
++    profile_show = profile_subparsers.add_parser("show", help="显示配置文件详情")
++    profile_show.add_argument("profile_name", help="要显示的配置文件")
+ 
+     profile_alias = profile_subparsers.add_parser(
+         "alias", help="Manage wrapper scripts"
+     )
+-    profile_alias.add_argument("profile_name", help="Profile name")
++    profile_alias.add_argument("profile_name", help="配置文件名称")
+     profile_alias.add_argument(
+         "--remove", action="store_true", help="Remove the wrapper script"
+     )
+@@ -13803,12 +13803,12 @@ Examples:
+         help="Custom alias name (default: profile name)",
+     )
+ 
+-    profile_rename = profile_subparsers.add_parser("rename", help="Rename a profile")
++    profile_rename = profile_subparsers.add_parser("rename", help="重命名配置文件")
+     profile_rename.add_argument("old_name", help="Current profile name")
+     profile_rename.add_argument("new_name", help="New profile name")
+ 
+     profile_export = profile_subparsers.add_parser(
+-        "export", help="Export a profile to archive"
++        "export", help="将配置文件导出为归档"
+     )
+     profile_export.add_argument("profile_name", help="Profile to export")
+     profile_export.add_argument(
+@@ -13816,7 +13816,7 @@ Examples:
+     )
+ 
+     profile_import = profile_subparsers.add_parser(
+-        "import", help="Import a profile from archive"
++        "import", help="从归档导入配置文件"
+     )
+     profile_import.add_argument("archive", help="Path to .tar.gz archive")
+     profile_import.add_argument(
+@@ -13874,7 +13874,7 @@ Examples:
+     )
+     profile_update.add_argument(
+         "-y", "--yes", action="store_true",
+-        help="Skip confirmation",
++        help="跳过确认",
+     )
+ 
+     profile_info = profile_subparsers.add_parser(
+@@ -13890,14 +13890,14 @@ Examples:
+     # =========================================================================
+     completion_parser = subparsers.add_parser(
+         "completion",
+-        help="Print shell completion script (bash, zsh, or fish)",
++        help="打印 shell 补全脚本（bash、zsh 或 fish）",
+     )
+     completion_parser.add_argument(
+         "shell",
+         nargs="?",
+         default="bash",
+         choices=["bash", "zsh", "fish"],
+-        help="Shell type (default: bash)",
++        help="Shell 类型（默认：bash）",
+     )
+     completion_parser.set_defaults(func=lambda args: cmd_completion(args, parser))
+ 
+@@ -13906,17 +13906,17 @@ Examples:
+     # =========================================================================
+     dashboard_parser = subparsers.add_parser(
+         "dashboard",
+-        help="Start the web UI dashboard",
+-        description="Launch the Hermes Agent web dashboard for managing config, API keys, and sessions",
++        help="启动 Web UI 仪表板",
++        description="启动 Hermes Agent Web 仪表板以管理配置、API 密钥和会话",
+     )
+     dashboard_parser.add_argument(
+-        "--port", type=int, default=9119, help="Port (default 9119)"
++        "--port", type=int, default=9119, help="端口（默认 9119）"
+     )
+     dashboard_parser.add_argument(
+-        "--host", default="127.0.0.1", help="Host (default 127.0.0.1)"
++        "--host", default="127.0.0.1", help="主机（默认 127.0.0.1）"
+     )
+     dashboard_parser.add_argument(
+-        "--no-open", action="store_true", help="Don't open browser automatically"
++        "--no-open", action="store_true", help="不自动打开浏览器"
+     )
+     dashboard_parser.add_argument(
+         "--insecure",
+@@ -13963,8 +13963,8 @@ Examples:
+     # =========================================================================
+     logs_parser = subparsers.add_parser(
+         "logs",
+-        help="View and filter Hermes log files",
+-        description="View, tail, and filter agent.log / errors.log / gateway.log",
++        help="查看和过滤 Hermes 日志文件",
++        description="查看、追踪和过滤 agent.log / errors.log / gateway.log",
+         formatter_class=argparse.RawDescriptionHelpFormatter,
+         epilog="""\
+ Examples:
+@@ -13991,13 +13991,13 @@ Examples:
+         "--lines",
+         type=int,
+         default=50,
+-        help="Number of lines to show (default: 50)",
++        help="显示行数（默认：50）",
+     )
+     logs_parser.add_argument(
+         "-f",
+         "--follow",
+         action="store_true",
+-        help="Follow the log in real time (like tail -f)",
++        help="实时追踪日志（类似 tail -f）",
+     )
+     logs_parser.add_argument(
+         "--level",
