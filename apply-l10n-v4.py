@@ -69,7 +69,7 @@ else:
     # ===== Step 5: Apply to commands.py =====
     cmd_path = os.path.join(AGENT_DIR, "hermes_cli", "commands.py")
     if os.path.exists(cmd_path):
-        # Commands.py uses a different format: CommandDef("name", "description", ...)
+        # Extract old->new description pairs from the patch
         minus_cmd = re.findall(r'^-.*?CommandDef\("[^"]*",\s*"([^"]*)"', patch, re.MULTILINE)
         plus_cmd  = re.findall(r'^\+.*?CommandDef\("[^"]*",\s*"([^"]*)"', patch, re.MULTILINE)
         cmd_map = {}
@@ -81,17 +81,12 @@ else:
             content = f.read()
         count = 0
         for old, new in cmd_map.items():
-            # Match: CommandDef("name", "old_description", ...)
-            pattern = f'CommandDef("[^"]*", "{re.escape(old)}"'
-            matches = list(re.finditer(pattern, content))
-            if matches:
-                # Replace the description part
-                for m in matches:
-                    full = m.group(0)
-                    idx = full.index(f'"{old}"')
-                    new_full = full[:idx] + f'"{new}"' + full[idx+len(old)+2:]
-                    content = content.replace(full, new_full)
-                    count += 1
+            # Simple string replace: "old_desc" -> "new_desc"
+            old_str = f'"{old}"'
+            new_str = f'"{new}"'
+            if old_str in content:
+                content = content.replace(old_str, new_str)
+                count += 1
         with open(cmd_path, "w", encoding="utf-8") as f:
             f.write(content)
         print(f"  ✓ commands.py: 翻译 {count} 条")
